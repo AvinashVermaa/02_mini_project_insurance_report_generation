@@ -1,0 +1,134 @@
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Bootstrap Form Example</title>
+<link
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	rel="stylesheet">
+</head>
+<body>
+
+	<!-- navbar starts here -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="/report_generation/">Insurance
+			Report Generation</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarNav" aria-controls="navbarNav"
+			aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item active"><a class="nav-link"
+					href="/report_generation/">Home <span class="sr-only">(current)</span>
+				</a>
+			</ul>
+		</div>
+	</nav>
+
+
+	<!-- navbar ends here-->
+
+	<div class="container mt-5">
+		<h2 class="text-center mt-4">Report DashBoard</h2>
+		<form th:action="@{/saveReportData}" method="post"
+			th:object="${binding}">
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label for="dropdown1">Plan Name</label> <select id="dropdown1"
+						class="form-control" th:field="*{planName}">
+						<option value="">--Plan Name--</option>
+						<option th:each="planName : ${planNames}" th:text="${planName}"
+							th:value="${planName}"></option>
+					</select>
+				</div>
+				<div class="form-group col-md-4">
+					<label for="dropdown2">Plan Status</label> <select id="dropdown2"
+						class="form-control" th:field="*{planStatus}">
+						<option value="">--Plan Status--</option>
+						<option th:each="planStatus :${planStatuses}"
+							th:value="${planStatus}" th:text="${planStatus}"></option>
+					</select>
+				</div>
+				<div class="form-group col-md-4">
+					<label for="dropdown3">Gender</label> <select id="dropdown3"
+						class="form-control" th:field="*{gender}">
+						<option value="">--Gender--</option>
+						<option value="Male">Male</option>
+						<option value="Female">Female</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="startDate">Start Date</label> <input type="date"
+						class="form-control" id="startDate" th:field="*{planStartDate}">
+				</div>
+				<div class="form-group col-md-6">
+					<label for="endDate">End Date</label> <input type="date"
+						class="form-control" id="endDate" th:field="*{planEndDate}">
+				</div>
+			</div>
+			<center>
+				<input type="submit" class="btn btn-primary" value="Submit" /> <input
+					type="reset" class="btn btn-danger" value="Reset" />
+			</center>
+		</form>
+	</div>
+
+	<div class="container mt-5">
+		<!-- table data start -->
+		<h3 class="h3 text-center">View All Report Fetched Data</h3>
+		<table class="table table-striped table-bordered table-hover">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">Id</th>
+					<th scope="col">Name</th>
+					<th scope="col">Email</th>
+					<th scope="col">Gender</th>
+					<th scope="col">SSN</th>
+					<th scope="col">Plan Name</th>
+					<th scope="col">Plan Status</th>
+					<th scope="col">Plan Start Date</th>
+					<th scope="col">Plan End Date</th>
+				</tr>
+			</thead>
+			<tbody>
+			
+				<tr th:if="${listReport == null || #lists.isEmpty(listReport)}">
+					<td class="text-danger text-center" colspan="9">No Record Found</td>
+				</tr>
+			
+				<tr th:each="list : ${listReport}">
+					<td th:text="${list.id}"></td>
+					<td th:text="${list.name}"></td>
+					<td th:text="${list.email}"></td>
+					<td th:text="${list.gender}"></td>
+					<td th:text="${list.ssn}"></td>
+					<td th:text="${list.planName}"></td>
+					<td th:text="${list.planStatus}"></td>
+					<td th:text="${list.planStartDate}"></td>
+					<td th:text="${list.planEndDate}"></td>
+				</tr>
+
+			</tbody>
+		</table>
+	</div>
+	<!-- table data end -->
+	<div class="container mt-5">
+		<center>
+			<a th:href="@{/downloadExcelData}" class="btn btn-success">Download Excel Data</a> 
+			<a th:href="@{/downloadPdfData}" class="btn btn-danger">Download Pdf Data</a>
+		</center>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
