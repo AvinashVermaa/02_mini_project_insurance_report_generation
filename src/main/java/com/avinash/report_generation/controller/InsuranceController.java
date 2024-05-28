@@ -17,18 +17,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.avinash.report_generation.bindings.ReportBinding;
 import com.avinash.report_generation.entity.InsuranceReport;
 import com.avinash.report_generation.service.InsuranceReportService;
+import com.avinash.report_generation.utility.ReportEmailSender;
 
 import io.micrometer.common.util.StringUtils;
 
 @Controller
 public class InsuranceController {
 
-	private InsuranceReportService insuranceReportService;
-
 	@Autowired
-	public InsuranceController(InsuranceReportService insuranceReportService) {
+	private InsuranceReportService insuranceReportService;
+	
+	@Autowired
+	private ReportEmailSender emailSender;
+
+	
+	public InsuranceController() {
 		System.out.println("InsuranceController :: controller");
-		this.insuranceReportService = insuranceReportService;
+		
 	}
 
 	@GetMapping("/")
@@ -85,13 +90,26 @@ public class InsuranceController {
 	public ResponseEntity<InputStreamResource> downloadExcelData(Model model) {
 		System.out.println("Inside downloadExcelData");
 		ByteArrayInputStream bis = insuranceReportService.generateExcel();
+		emailSender.sendEmailWithExcelAttachment(bis,1);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Disposition", "attachment; filename=users.xls");
 		return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_OCTET_STREAM)
-				.body(new InputStreamResource(bis));
+				.body(new InputStreamResource(insuranceReportService.generateExcel()));
 
 		// setPlanNameAndStatusInForm(model);
 		// return "report";
+	}
+
+	@GetMapping("/downloadPdfData")
+	public ResponseEntity<InputStreamResource> downloadPdfData() {
+		System.out.println("inside downladPdfData method");
+		ByteArrayInputStream bis = insuranceReportService.generatePdf();
+		emailSender.sendEmailWithExcelAttachment(bis, 2);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "attachment; filename=users.pdf");
+		return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF)
+				.body(new InputStreamResource(insuranceReportService.generatePdf()));
+
 	}
 
 }

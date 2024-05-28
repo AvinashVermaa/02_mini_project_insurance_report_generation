@@ -16,4 +16,6 @@ public interface InsuranceReportService {
 	public List<InsuranceReport> getInsuranceReportByExample(InsuranceReport insuranceReport);
 	
 	public ByteArrayInputStream generateExcel();
+	
+	public ByteArrayInputStream generatePdf();
 }
